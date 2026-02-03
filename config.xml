@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<configuration>
+  <version>
+    <major>1</major>
+    <minor>1</minor>
+  </version>
+  <image>
+    <name>ggilman/openhamclock</name>
+  </image>
+  <executable>
+    <name>node</name>
+  </executable>
+  <builder>
+    <name>mybuilder</name>
+  </builder>
+  <platforms>linux/amd64,linux/arm64</platforms>
+</configuration>

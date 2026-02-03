@@ -1,0 +1,13 @@
+services:
+  openhamclock:
+    image: openhamclock:latest
+    container_name: openhamclock
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - ./config:/config
