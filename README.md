@@ -1,6 +1,9 @@
 # OpenHamClock (Docker)
 
 A lightweight, headless Docker container for [OpenHamClock](https://github.com/accius/openhamclock).
+**Source Code:** [github.com/ggilman/openhamclock](https://github.com/ggilman/openhamclock)
+
+**OpenHamClock** is a modern, modular amateur radio dashboard built with React. It displays real-time space weather, band conditions, DX cluster spots, POTA activations, propagation predictions, and more.
 
 This image is optimized for server environments (NAS, Raspberry Pi, Docker Swarm). It strips out the heavy Electron desktop components, running the raw Node.js server directly.
 
@@ -30,6 +33,8 @@ services:
       - "3000:3000"
     environment:
       - TZ=America/Chicago
+      - CALLSIGN=N0CALL # Optional: Set your callsign
+      - LOCATOR=FN31    # Optional: Set your grid square
     volumes:
       - ./config:/config
 ```
@@ -56,6 +61,7 @@ services:
       - traefik_proxy
     environment:
       - TZ=America/Chicago
+      - CALLSIGN=N0CALL
     volumes:
       - /mnt/nas/docker/openhamclock:/config
     deploy:
@@ -76,9 +82,17 @@ networks:
 
 ## Configuration
 
+The application can be configured via Environment Variables.
+
 | Variable | Default | Description |
 |---|---|---|
-| TZ | UTC | Timezone (e.g., America/Chicago). |
+| `CALLSIGN` | N0CALL | Your station callsign. |
+| `LOCATOR` | AB12 | Your Grid Square (e.g., `FN31`). |
+| `TZ` | UTC | Timezone (e.g., `America/Chicago`). |
+| `OPENWEATHER_API_KEY` | | Optional: API key for local weather. |
+| `SHOW_SATELLITES` | `true` | Show satellite tracking. |
+| `SHOW_POTA` | `true` | Show Parks on the Air. |
+| `THEME` | `dark` | `dark`, `light`, `legacy`, `retro` |
 
 ### User Permissions
 This container runs as a fixed non-root user (`hamuser`) with **UID 1000** and **GID 1000**.
