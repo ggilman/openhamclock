@@ -25,8 +25,8 @@ RUN npm install -g npm@latest && \
 FROM node:20-alpine
 LABEL org.opencontainers.image.authors="ggilman@gmail.com"
 
-# Install shadow for user management
-RUN apk add --no-cache shadow
+# Install shadow for user management and tini for init process
+RUN apk add --no-cache shadow tini
 
 WORKDIR /app
 
@@ -53,9 +53,14 @@ RUN ln -s /config /home/hamuser/.openhamclock
 # OpenHamClock standard port
 EXPOSE 3000
 
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+
 # Drop to non-root user for security
 USER hamuser
 
 # --- FINAL FIX: Run Node Directly ---
 # Bypassing 'npm start' ensures the container doesn't crash in Swarm
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "server.js"]
