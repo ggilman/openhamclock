@@ -17,7 +17,9 @@ This image is optimized for server environments (NAS, Raspberry Pi, Docker Swarm
 * **Swarm Ready:** Configured for Docker Swarm and Traefik.
 * **Secure:** Runs as a non-root user (`hamuser`, UID 1000).
 
-## Quick Start (Docker Compose)
+## Deployment
+
+### Standard Deployment (Docker Compose)
 
 Save this as `docker-compose.yml`:
 
@@ -39,15 +41,31 @@ services:
       - ./config:/config
 ```
 
-**Deploy:**
+**Run:**
 
 ```bash
 docker-compose up -d
 ```
 
+### Simple Deployment (Docker CLI)
+
+If you prefer to run it with a single command:
+
+```bash
+docker run -d \
+  --name openhamclock \
+  --restart unless-stopped \
+  -p 3000:3000 \
+  -e TZ=America/Chicago \
+  -e CALLSIGN=N0CALL \
+  -e LOCATOR=FN31 \
+  -v $(pwd)/config:/config \
+  ggilman/openhamclock:latest
+```
+
 Access at: http://localhost:3000
 
-## Docker Swarm Deployment
+### Docker Swarm Deployment
 
 This image is designed for Swarm. It respects standard environment variables for Traefik integration.
 
