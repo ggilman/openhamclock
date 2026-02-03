@@ -128,7 +128,7 @@ docker build -t openhamclock:local .
 ## Credits
 
 * Original Application: [OpenHamClock](https://github.com/accius/openhamclock) by Accius.
-* Container Maintenance: Gregory Gilman
+* Container Maintenance: Gregory Gilman <ggilman@gmail.com>
 
 ## License
 
