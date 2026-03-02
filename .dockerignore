@@ -1,8 +1,26 @@
+# Git
 .git
 .gitignore
-docker-compose.yml
+.github/
+
+# Docker/Compose
+docker-compose*.yml
+
+# Docs & metadata (not needed in build context)
 README.md
 LICENSE
 config.xml
+
+# Runtime / local data
 config/
 node_modules/
+dist/
+
+# Scripts (build clones from git, local scripts irrelevant)
+*.sh
+
+# Misc
+.DS_Store
+*.log
+.env
+.env.*

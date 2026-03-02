@@ -24,8 +24,6 @@ This image is optimized for server environments (NAS, Raspberry Pi, Docker Swarm
 Save this as `docker-compose.yml`:
 
 ```yaml
-version: '3.8'
-
 services:
   openhamclock:
     image: ggilman/openhamclock:latest
@@ -35,8 +33,8 @@ services:
       - "3000:3000"
     environment:
       - TZ=America/Chicago
-      - CALLSIGN=N0CALL # Optional: Set your callsign
-      - LOCATOR=FN31    # Optional: Set your grid square
+      - CALLSIGN=N0CALL  # Optional: set your callsign
+      - LOCATOR=FN31     # Optional: set your grid square
     volumes:
       - ./config:/config
 ```
@@ -44,7 +42,7 @@ services:
 **Run:**
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Simple Deployment (Docker CLI)
@@ -70,8 +68,6 @@ Access at: http://localhost:3000
 This image is designed for Swarm. It respects standard environment variables for Traefik integration.
 
 ```yaml
-version: '3.8'
-
 services:
   openhamclock:
     image: ggilman/openhamclock:latest
@@ -80,6 +76,8 @@ services:
     environment:
       - TZ=America/Chicago
       - CALLSIGN=N0CALL
+      - PORT=3000
+      - HOST=0.0.0.0
     volumes:
       - /mnt/nas/docker/openhamclock:/config
     deploy:
@@ -100,17 +98,20 @@ networks:
 
 ## Configuration
 
-The application can be configured via Environment Variables.
+On first run the container creates `/app/.env` from the bundled `.env.example`. The entrypoint script then patches `PORT` and `HOST` in that file so Docker environment variables always take precedence over the dotenv defaults. All other variables can be set via `environment:` in your compose file or passed with `docker run -e`.
 
 | Variable | Default | Description |
 |---|---|---|
+| `PORT` | `3000` | Port the Node.js server binds to. |
+| `HOST` | `0.0.0.0` | Interface the server listens on. |
 | `CALLSIGN` | N0CALL | Your station callsign. |
-| `LOCATOR` | AB12 | Your Grid Square (e.g., `FN31`). |
+| `LOCATOR` | FN31 | Your Maidenhead grid square (4 or 6 characters). |
 | `TZ` | UTC | Timezone (e.g., `America/Chicago`). |
-| `OPENWEATHER_API_KEY` | | Optional: API key for local weather. |
-| `SHOW_SATELLITES` | `true` | Show satellite tracking. |
-| `SHOW_POTA` | `true` | Show Parks on the Air. |
-| `THEME` | `dark` | `dark`, `light`, `legacy`, `retro` |
+| `OPENWEATHER_API_KEY` | | Optional: API key for cloud map overlay. |
+| `SHOW_SATELLITES` | `true` | Show satellite tracking panel. |
+| `SHOW_POTA` | `true` | Show Parks on the Air panel. |
+| `THEME` | `dark` | UI theme: `dark`, `light`, `legacy`, or `retro`. |
+| `SETTINGS_SYNC` | `false` | Persist UI settings server-side (recommended for self-hosted). |
 
 ### User Permissions
 This container runs as a fixed non-root user (`hamuser`) with **UID 1000** and **GID 1000**.
@@ -141,6 +142,34 @@ cd openhamclock
 
 # Build
 docker build -t openhamclock:local .
+```
+
+### Build Arguments
+
+| Argument | Default | Description |
+|---|---|---|
+| `NODE_VERSION` | `20` | Node.js major version |
+| `ALPINE_TAG` | `3.23` | Alpine Linux version |
+| `GIT_REPO` | `https://github.com/accius/openhamclock.git` | Source repository URL |
+| `GIT_BRANCH` | `main` | Branch, tag, or commit to build from |
+
+**Examples:**
+
+```bash
+# Build from a specific upstream tag
+docker build --build-arg GIT_BRANCH=v2.1.0 -t openhamclock:local .
+
+# Use a fork
+docker build \
+  --build-arg GIT_REPO=https://github.com/yourfork/openhamclock.git \
+  --build-arg GIT_BRANCH=my-feature \
+  -t openhamclock:local .
+
+# Pin to a specific Node/Alpine version
+docker build \
+  --build-arg NODE_VERSION=22 \
+  --build-arg ALPINE_TAG=3.21 \
+  -t openhamclock:local .
 ```
 
 ## Credits
