@@ -2,7 +2,7 @@
 <configuration>
   <version>
     <major>1</major>
-    <minor>2</minor>
+    <minor>3</minor>
   </version>
   <image>
     <name>ggilman/openhamclock</name>
@@ -14,4 +14,5 @@
     <name>mybuilder</name>
   </builder>
   <platforms>linux/amd64,linux/arm64</platforms>
+  <upstream_version>26.3.3</upstream_version>
 </configuration>

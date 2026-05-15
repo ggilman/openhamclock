@@ -149,26 +149,27 @@ docker build -t openhamclock:local .
 | Argument | Default | Description |
 |---|---|---|
 | `NODE_VERSION` | `20` | Node.js major version |
-| `ALPINE_TAG` | `3.23` | Alpine Linux version |
+| `BASE_OS_TAG` | `3.23` | Base OS image version tag |
 | `GIT_REPO` | `https://github.com/accius/openhamclock.git` | Source repository URL |
-| `GIT_BRANCH` | `main` | Branch, tag, or commit to build from |
+| `APP_VERSION` | *(required)* | Upstream release tag to build (e.g. `26.3.3`) |
 
 **Examples:**
 
 ```bash
 # Build from a specific upstream tag
-docker build --build-arg GIT_BRANCH=v2.1.0 -t openhamclock:local .
+docker build --build-arg APP_VERSION=26.3.3 -t openhamclock:local .
 
 # Use a fork
 docker build \
   --build-arg GIT_REPO=https://github.com/yourfork/openhamclock.git \
-  --build-arg GIT_BRANCH=my-feature \
+  --build-arg APP_VERSION=26.3.3 \
   -t openhamclock:local .
 
 # Pin to a specific Node/Alpine version
 docker build \
   --build-arg NODE_VERSION=22 \
-  --build-arg ALPINE_TAG=3.21 \
+  --build-arg BASE_OS_TAG=3.21 \
+  --build-arg APP_VERSION=26.3.3 \
   -t openhamclock:local .
 ```
 
